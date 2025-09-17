@@ -33,3 +33,28 @@ def unique_columns(df):
         if df[col].nunique()==1:
             unique_col.append(col)
     return unique_col
+# Remove collinear features
+def remove_collinear_features(df, threshold=0.7):
+    """ Removing collinear features helps to:
+        1. Improve model interpretability: collinear features can make it difficult to interpret the effects of individual features on the target varibable.
+        2. Reduce overfitting: collinear features can lead to overfitting, as the model may  learn to rely on redundant information resulting in poor new data predictions.
+        3. Enhace model stability: removing collinear features can make the model more stable and less sensitive to small changes in the data.
+         4.Improve computational efficiency: removing collinear features can reduce the number of features in the dataset, which can improve the computational efficiency of the model training process. """
+    # calcualte the correlation matrix
+    corr_matrix = df.corr()
+    iters = range(len(corr_matrix.columns)-1)
+    drop_cols = []
+    for i in iters:
+        for j in range(i+1):
+            items = corr_matrix.iloc[j:j+1, i+1:i+2]
+            col = items.columns
+            row = items.index
+            val = abs(items.values)
+            if val >= threshold:
+                
+                print(col.values[0], "|", row.values[0], "|", round(val[0][0],2))
+                drop_cols.append(col.values[0])
+    drop=set(drop_cols)
+    df = df.drop(columns=drop)
+    return df
+
