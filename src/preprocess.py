@@ -22,3 +22,7 @@ def summary(df, pred=None):
     print(str.Types.value_counts())
     print('___________________________')
     return str
+def null_values(df):
+    # a percentage to show null values
+    nv = pd.concat([df.isnull().sum(), 100*df.isnull().sum()/df.shape[0]],axis=1).rename(columns={0:'Missing_Records', 1:'Percentage %'})
+    return nv[nv.Missing_Records>0].sort_values('Missing_Records', ascending=False)
